@@ -2,33 +2,16 @@
 //
 
 #define OLC_PGE_APPLICATION
+#define OLC_PGEX_QUICKGUI
 
-#include "olcPixelGameEngine.h"
-#include "olcPGEX_QuickGUI.h"
+#include "neorandom.h"
 #include <iostream>
 
-class App : public olc::PixelGameEngine {
+class App : public NeoRandom {
 public:
-    App() { sAppName = "neorandom"; }
-
-    bool OnUserCreate() override {
-        
-        return true;
+    void setAlgo(int seed) override {
+        std::cout << "yah" << std::endl;
     }
-
-    bool OnUserUpdate(float fElapsedTime) override {
-        Clear(olc::WHITE);
-        SetPixelMode(olc::Pixel::MASK);
-
-        return true;
-    }
-
-    bool OnUserDestroy() override {
-        return true;
-    }
-
-private:
-    olc::QuickGUI::Manager guiManager;
 };
 
 

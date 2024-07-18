@@ -6,13 +6,47 @@
 #include "olcPixelGameEngine.h"
 #include "olcPGEX_QuickGUI.h"
 
-class NeoRandom {
+class NeoRandom : public olc::PixelGameEngine {
 public:
-	NeoRandom();
-	~NeoRandom();
+    NeoRandom() { sAppName = "neorandom"; }
 
-	void update(olc::PixelGameEngine* engine);
-	void setAlgo()
+    bool OnUserCreate() override {
+        createGUI();
+        setAlgo(seed);
+        return true;
+    }
+
+    bool OnUserUpdate(float fElapsedTime) override {
+        Clear(olc::GREY);
+        SetPixelMode(olc::Pixel::MASK);
+
+        updateGUI();
+
+        return true;
+    }
+
+    bool OnUserDestroy() override {
+        return true;
+    }
+
+    virtual void setAlgo(int seed) {
+        std::cout << "Algo undefined" << std::endl;
+    }
+
+    int seed = 0;
+private:
+    void createGUI() {
+        seedBox = new olc::QuickGUI::TextBox(_guiManager, "asdfsa", { 50.0f, 50.0f }, { 100.0f, 50.0f });
+    }
+
+    void updateGUI() { 
+        _guiManager.Update(this);
+        _guiManager.Draw(this);
+    }
+
+    olc::QuickGUI::Manager _guiManager;
+
+    olc::QuickGUI::TextBox* seedBox = nullptr;
 };
 
 #endif

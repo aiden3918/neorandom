@@ -20,13 +20,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\olcPixelGameEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\olcPGEX_QuickGUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="neorandom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="olcPGEX_QuickGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="olcPixelGameEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
