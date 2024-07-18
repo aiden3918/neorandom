@@ -6,11 +6,14 @@
 
 #include "neorandom.h"
 #include <iostream>
+#include <ctime>
 
 class App : public NeoRandom {
 public:
     void setAlgo(int seed) override {
+        std::time_t time = std::time(nullptr);
         std::cout << "yah" << std::endl;
+        std::cout << std::asctime_s(std::localtime(&time)) << time << std::endl;
     }
 };
 

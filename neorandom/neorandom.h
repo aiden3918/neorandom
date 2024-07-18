@@ -36,7 +36,7 @@ public:
     int seed = 0;
 private:
     void createGUI() {
-        seedBox = new olc::QuickGUI::TextBox(_guiManager, "asdfsa", { 50.0f, 50.0f }, { 100.0f, 50.0f });
+        seedTextInput = new olc::QuickGUI::TextBox(_guiManager, "asdfsa", { 50.0f, 50.0f }, { 100.0f, 50.0f });
     }
 
     void updateGUI() { 
@@ -46,7 +46,8 @@ private:
 
     olc::QuickGUI::Manager _guiManager;
 
-    olc::QuickGUI::TextBox* seedBox = nullptr;
+    olc::QuickGUI::TextBox* seedTextInput = nullptr;
+    olc::QuickGUI::Button* generateSeedBtn = nullptr; // uses current date
 };
 
 #endif
