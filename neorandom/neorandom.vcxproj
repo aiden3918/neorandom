@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,12 +128,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="neorandom.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="neorandom.h" />
     <ClInclude Include="olcPGEX_QuickGUI.h" />
     <ClInclude Include="olcPixelGameEngine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="neorandomapp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
