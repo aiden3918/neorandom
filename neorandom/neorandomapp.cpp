@@ -14,10 +14,11 @@ public:
     uInt setAlgo(uInt seed) override {
 
         // x = (x_0) ^ 2 / 3
-        seed = seed * (seed - 5);
-        seed++;
+        // BSD: seed = 1103515245 * seed + 12345;
+        // Microsoft: seed = 214013 * seed + 2531011;
+        seed = 1103515245 * seed + 12345;
 
-        std::cout << seed << std::endl;
+        // std::cout << seed << std::endl;
 
         return seed;
     }

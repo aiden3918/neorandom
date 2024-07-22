@@ -25,7 +25,7 @@ public:
 
     bool OnUserCreate() override {
         setAllParams(5, 10, 1000);
-        createGUI();
+        _createGUI();
         return true;
     }
 
@@ -34,22 +34,27 @@ public:
         SetPixelMode(olc::Pixel::MASK);
 
         if (_runAlgoBtn->bPressed) {
-            _errorLabel->sText = "";
-            if (_runAlgo()) {
+
+            if (_validateInputs()) {
+                _errorLabel->sText = "";
+                std::cout << "Valid inputs" << std::endl;
+                _runAlgo();
                 std::cout << "Successfuly ran algorithm" << std::endl;
 
                 _getResultData();
                 _updateGraphPoints();
             }
             else {
-                _errorLabel->sText = "Invalid input. Make sure seed is a positive integer";
+                _errorLabel->sText = "Invalid input. Make sure all parameters are positive integers";
                 std::cout << "Invalid input" << std::endl;
             }
+
         }
+
         if (_generateSeedBtn->bPressed) _generateSeed();
 
-        drawGraph();
-        updateGUI();
+        _drawGraph();
+        _updateGUI();
 
         return true;
     }
@@ -83,9 +88,9 @@ private:
     uInt _seed;
 
     uInt _min = 0;
-    uInt _max = 1;
+    uInt _max = 11;
     uInt _range = _max - _min;
-    uInt _iterations = 1;
+    uInt _iterations = 10;
 
     // since we can define the iteraitons every time, it might be better if we defined it
     // as an array
@@ -97,15 +102,14 @@ private:
 
     float _idealFrequencyDec; // the theoretical frequency of all generated nums if the algo is "fair"
 
-    bool _runAlgo() {
-        // check if seed actually works
-        std::string seedStr = _seedTextInput->sText;
+    void _runAlgo() {
 
-        for (char& c : seedStr) if (!std::isdigit(c)) return false;
+        uInt x = std::stoul(_seedTextInput->sText);
+        _min = std::stoul(_minInput->sText);
+        _max = std::stoul(_maxInput->sText);
+        _iterations = std::stoul(_iterationsInput->sText);
+        _range = _max - _min;
 
-        uInt x = std::stoul(seedStr);
-
-        std::cout << "Valid input" << std::endl;
         std::cout << "min: " << _min << " | max: " << _max << " | iterations: " << _iterations << std::endl;
         std::cout << "first x successfully created" << std::endl;
 
@@ -123,11 +127,9 @@ private:
         }
 
         std::cout << "algo done" << std::endl;
-        for (auto &e : _generatedNums) {
-            std::cout << e << std::endl;
-        }
-
-        return true;
+        //for (auto &e : _generatedNums) {
+        //    std::cout << e << std::endl;
+        //}
     }
 
     // O(nlog(n))
@@ -189,7 +191,26 @@ private:
     olc::QuickGUI::Label* _errorLabel = nullptr;
     olc::QuickGUI::Label* _suggestionLabel = nullptr;
 
-    void createGUI() {
+    olc::QuickGUI::Label* _paramLabel = nullptr;
+    olc::QuickGUI::TextBox* _minInput = nullptr;
+    olc::QuickGUI::TextBox* _maxInput = nullptr;
+    olc::QuickGUI::TextBox* _iterationsInput = nullptr;
+    olc::QuickGUI::Button* _updateParamsBtn = nullptr;
+
+    bool _validateInputs() {
+        for (char& c : _seedTextInput->sText) if (!std::isdigit(c)) return false;
+        std::cout << "seed is valid" << std::endl;
+        for (char& c : _minInput->sText) if (!std::isdigit(c)) return false;
+        std::cout << "min is valid" << std::endl;
+        for (char& c : _maxInput->sText) if (!std::isdigit(c)) return false;
+        std::cout << "max is valid" << std::endl;
+        for (char& c : _iterationsInput->sText) if (!std::isdigit(c)) return false;
+        std::cout << "iter is valid" << std::endl;
+
+        return true;
+    }
+
+    void _createGUI() {
         _seedTextInput = new olc::QuickGUI::TextBox(_guiManager, "Enter seed:", 
             { 50.0f, 50.0f }, { 100.0f, 50.0f });
         _generateSeedBtn = new olc::QuickGUI::Button(_guiManager, "Generate seed (ms)",
@@ -201,9 +222,20 @@ private:
         _suggestionLabel = new olc::QuickGUI::Label(_guiManager,
             "For the \"fairest\" RNG algorithm, the graph lie near the green line",
             { 150.0f, 650.0f }, { 200.0f, 50.0f });
+
+        _paramLabel = new olc::QuickGUI::Label(_guiManager, "Set result parameters [min, max)",
+            {850.0f, 50.0f}, {100.0f, 50.0f});
+        _minInput = new olc::QuickGUI::TextBox(_guiManager, std::to_string(_min),
+            { 850.0f, 120.0f }, { 50.0f, 50.0f });
+        _maxInput = new olc::QuickGUI::TextBox(_guiManager, std::to_string(_max),
+            { 920.0f, 120.0f }, { 50.0f, 50.0f });
+        _iterationsInput = new olc::QuickGUI::TextBox(_guiManager, std::to_string(_iterations),
+            { 990.0f, 120.0f }, { 50.0f, 50.0f });
+        // _updateParamsBtn = new olc::QuickGUI::Button(_guiManager, "Update", { 850.0f, 200.0f },
+            // { 50.0f, 50.0f });
     }
 
-    void updateGUI() { 
+    void _updateGUI() { 
         _guiManager.Update(this);
         _guiManager.Draw(this);
     }
@@ -217,7 +249,7 @@ private:
     
     std::vector<GraphPoint> _graphPoints;
 
-    void drawGraph() {
+    void _drawGraph() {
         // graph outline
         DrawRect(_graphPos, _graphSize, olc::BLACK);
 
