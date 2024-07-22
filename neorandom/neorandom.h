@@ -220,7 +220,7 @@ private:
         _errorLabel = new olc::QuickGUI::Label(_guiManager, "", 
             { 100.0f, 120.0f }, { 200.0f, 30.0f });
         _suggestionLabel = new olc::QuickGUI::Label(_guiManager,
-            "For the \"fairest\" RNG algorithm, the graph lie near the green line",
+            "For the \"fairest\" RNG algorithm, the graph should lie near the green line",
             { 150.0f, 650.0f }, { 200.0f, 50.0f });
 
         _paramLabel = new olc::QuickGUI::Label(_guiManager, "Set result parameters [min, max)",
