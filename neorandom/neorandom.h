@@ -163,8 +163,8 @@ private:
         _idealFrequencyDec = 1.0f / (float)_numFreqPair.size(); // * 100%
         _idealDisplacementY = (float)_maxYDisplacement * _idealFrequencyDec / _highestRelFreqDec;
 
-        std::cout << "highest relative frequency: " << _highestRelFreq << " / " << 
-            _highestRelFreqDec << std::endl;
+        std::cout << "highest relative frequency: " << _highestRelFreq << " (" << 
+            _highestRelFreqDec << ") / 1" << std::endl;
     }
 
     void _generateSeed() {
@@ -232,7 +232,7 @@ private:
         // min and max labels
         DrawString({ _graphPos.x + minMaxOffset.x, _graphPos.y + _graphSize.y + minMaxOffset.y }, 
             std::to_string(_min));
-        DrawString(_graphPos + _graphSize + minMaxOffset, std::to_string(_max));
+        DrawString(_graphPos + _graphSize + minMaxOffset, std::to_string(_max - 1));
         
         // highest rel freq label and ideal freq line
         DrawLine({ _graphPos.x - 5, _highestPointY }, { _graphPos.x + 5, _highestPointY }, 
@@ -258,14 +258,14 @@ private:
     void _updateGraphPoints() {
         _graphPoints.clear();
 
-        int graphXSpace = _graphSize.x / _numFreqPair.size();
+        int graphXSpace = _graphSize.x / (_range - 1);
 
         int currentXPos = _graphPos.x;
         int graphXAxis = _graphPos.y + _graphSize.y;
-        for (auto& e : _numFreqPair) {
+        for (uInt i = _min; i < _max; i++) {
             GraphPoint gp = GraphPoint();
-            gp.value = e.first;
-            gp.relFreq = e.second;
+            gp.value = i;
+            gp.relFreq = _numFreqPair[i];
             gp.relFreqPercent = (float)gp.relFreq / (float)_generatedNums.size();
             gp.weightedRelFreqPercent = (float)gp.relFreq / (float)_highestRelFreq;
 

@@ -14,8 +14,8 @@ public:
     uInt setAlgo(uInt seed) override {
 
         // x = (x_0) ^ 2 / 3
-        seed = seed * seed;
-        seed = seed / 3;
+        seed = seed * (seed - 5);
+        seed++;
 
         std::cout << seed << std::endl;
 
