@@ -62,6 +62,8 @@ int main() {
 }
 ```
 
+This program does utilize the OLC PixelGameEngine.
+
 # License (OLC-3)
 Copyright 2018 - 2024 OneLoneCoder.com
 
