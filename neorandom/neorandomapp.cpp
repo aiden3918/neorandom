@@ -9,11 +9,17 @@
 
 class App : public NeoRandom {
 public:
-    void setAlgo(int seed) override {
-        // std::time_t time = std::time(nullptr);
-        std::cout << "yah" << std::endl;
-        // std::cout << std::asctime_s(std::localtime(&time)) << time << std::endl;
 
+    // linear congruential algorithm: x = (a * x_0 + c) mod m
+    uInt setAlgo(uInt seed) override {
+
+        // x = (x_0) ^ 2 / 3
+        seed = seed * seed;
+        seed = seed / 3;
+
+        std::cout << seed << std::endl;
+
+        return seed;
     }
 };
 
