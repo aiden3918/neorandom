@@ -33,22 +33,26 @@ public:
         Clear(olc::GREY);
         SetPixelMode(olc::Pixel::MASK);
 
-        if (_runAlgoBtn->bPressed) {
+        if (_validateInputs()) {
+            _min = std::stoul(_minInput->sText);
+            _max = std::stoul(_maxInput->sText);
+            _iterations = std::stoul(_iterationsInput->sText);
+            _range = _max - _min;
+            _estimateAlgoRuntime();
 
-            if (_validateInputs()) {
-                _errorLabel->sText = "";
-                std::cout << "Valid inputs" << std::endl;
-                _runAlgo();
-                std::cout << "Successfuly ran algorithm" << std::endl;
+            if (_runAlgoBtn->bPressed) {
+                    _errorLabel->sText = "";
+                    std::cout << "Valid inputs" << std::endl;
+                    _runAlgo();
+                    std::cout << "Successfuly ran algorithm" << std::endl;
 
-                _getResultData();
-                _updateGraphPoints();
+                    _getResultData();
+                    _updateGraphPoints();
             }
-            else {
-                _errorLabel->sText = "Invalid input. Make sure all parameters are positive integers";
-                std::cout << "Invalid input" << std::endl;
-            }
-
+        }
+        else {
+            _estimateLabel->sText = "Invalid parameter input(s). Estimation unavailable.";
+            _errorLabel->sText = "Invalid input(s). Make sure all parameters are positive integers";
         }
 
         if (_generateSeedBtn->bPressed) _generateSeed();
@@ -102,13 +106,11 @@ private:
 
     float _idealFrequencyDec; // the theoretical frequency of all generated nums if the algo is "fair"
 
+    float _estimatedRuntimeSec;
+
     void _runAlgo() {
 
         uInt x = std::stoul(_seedTextInput->sText);
-        _min = std::stoul(_minInput->sText);
-        _max = std::stoul(_maxInput->sText);
-        _iterations = std::stoul(_iterationsInput->sText);
-        _range = _max - _min;
 
         std::cout << "min: " << _min << " | max: " << _max << " | iterations: " << _iterations << std::endl;
         std::cout << "first x successfully created" << std::endl;
@@ -182,6 +184,24 @@ private:
         std::cout << _seed << std::endl;
     }
 
+    void _estimateAlgoRuntime() {
+        // 10 million iterations (0-100): 5.3 seconds
+        // 10 million iterations (0-200): ~5.5 seconds
+        // 10 million iterations (0-1000): ~7 seconds
+        // for small ranges, estimated 20 milion/ second
+        // every range difference of 100 adds about 0.2 seconds
+        // estimated runtime equation: (0.0002 * range) + (0.00000005 * iterations) [generous]
+        _estimatedRuntimeSec = (0.0003 * _range) + (0.0000006 * _iterations);
+        std::string estimatedRuntimeStr;
+        if (_estimatedRuntimeSec < 1.0f) estimatedRuntimeStr = "Estimated runtime: < 1 sec";
+        else {
+            estimatedRuntimeStr = "Estimated runtime: " +
+                std::to_string(_estimatedRuntimeSec).substr(0, 3) + " sec";
+        }
+        _estimateLabel->sText = estimatedRuntimeStr;
+        // DrawString({ 850, 200 }, estimatedRuntimeStr );
+    }
+
     // GUI
     olc::QuickGUI::Manager _guiManager;
 
@@ -197,15 +217,13 @@ private:
     olc::QuickGUI::TextBox* _iterationsInput = nullptr;
     olc::QuickGUI::Button* _updateParamsBtn = nullptr;
 
+    olc::QuickGUI::Label* _estimateLabel = nullptr;
+
     bool _validateInputs() {
         for (char& c : _seedTextInput->sText) if (!std::isdigit(c)) return false;
-        std::cout << "seed is valid" << std::endl;
         for (char& c : _minInput->sText) if (!std::isdigit(c)) return false;
-        std::cout << "min is valid" << std::endl;
         for (char& c : _maxInput->sText) if (!std::isdigit(c)) return false;
-        std::cout << "max is valid" << std::endl;
         for (char& c : _iterationsInput->sText) if (!std::isdigit(c)) return false;
-        std::cout << "iter is valid" << std::endl;
 
         return true;
     }
@@ -233,6 +251,10 @@ private:
             { 990.0f, 120.0f }, { 50.0f, 50.0f });
         // _updateParamsBtn = new olc::QuickGUI::Button(_guiManager, "Update", { 850.0f, 200.0f },
             // { 50.0f, 50.0f });
+
+        _estimateLabel = new olc::QuickGUI::Label(_guiManager, "", { 850.0f, 200.f }, 
+            { 100.0f, 50.0f });
+
     }
 
     void _updateGUI() { 
@@ -290,9 +312,9 @@ private:
     void _updateGraphPoints() {
         _graphPoints.clear();
 
-        int graphXSpace = _graphSize.x / (_range - 1);
+        float graphXSpace = (float)_graphSize.x / (float)(_range - 1);
 
-        int currentXPos = _graphPos.x;
+        float currentXPos = (float)_graphPos.x;
         int graphXAxis = _graphPos.y + _graphSize.y;
         for (uInt i = _min; i < _max; i++) {
             GraphPoint gp = GraphPoint();
@@ -301,7 +323,7 @@ private:
             gp.relFreqPercent = (float)gp.relFreq / (float)_generatedNums.size();
             gp.weightedRelFreqPercent = (float)gp.relFreq / (float)_highestRelFreq;
 
-            gp.pos = { currentXPos, (int)(graphXAxis - (gp.weightedRelFreqPercent * _maxYDisplacement))};
+            gp.pos = { (int)currentXPos, (int)(graphXAxis - (gp.weightedRelFreqPercent * _maxYDisplacement))};
             _graphPoints.push_back(gp);
 
             currentXPos += graphXSpace;
