@@ -13,6 +13,16 @@ stastical distrubtion of its results on a graph.
 The goal of this program is to provide insight on self-implemented RNG algorithms by allowing the
 user to input their own algorithm and see the potential results, biases, or issues with the algorithm.
 
+## Features
+- Self-implemented RNG algorithm method (setAlgo())
+- Post-runtime stats graph
+- Parameter customization (range, iterations, positive integers only)
+- Runtime estimation
+- On-click statistics for each point
+
+### Future Plans (maybe)
+- Interval grouping (less clutter on graph for large ranges)
+
 ## Tutorial (How to Use)
 
 1. Download all files

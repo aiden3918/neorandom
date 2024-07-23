@@ -10,13 +10,26 @@
 
 typedef unsigned long int uInt;
 
+struct AABB {
+    olc::vi2d min;
+    olc::vi2d max;
+};
+
 struct GraphPoint {
     olc::vi2d pos;
     uInt value;
     uInt relFreq;
     float relFreqPercent;
     float weightedRelFreqPercent; // its relative frequency compared to the highest actual relative frequency
+    AABB hitbox;
 };
+
+bool checkPtCollision(olc::vi2d& pt, AABB& aabb) {
+    if (pt.x < aabb.min.x || pt.x > aabb.max.x) return false;
+    if (pt.y < aabb.min.y || pt.y > aabb.max.y) return false;
+    
+    return true;
+}
 
 // a prng, linear noncongruential rng algorithm
 class NeoRandom : public olc::PixelGameEngine {
@@ -51,7 +64,7 @@ public:
             }
         }
         else {
-            _estimateLabel->sText = "Invalid parameter input(s). Estimation unavailable.";
+            _estimateLabel->sText = "Invalid parameter input(s). Estimation unavailable";
             _errorLabel->sText = "Invalid input(s). Make sure all parameters are positive integers";
         }
 
@@ -59,6 +72,7 @@ public:
 
         _drawGraph();
         _updateGUI();
+        _updatePtDataListener();
 
         return true;
     }
@@ -219,6 +233,8 @@ private:
 
     olc::QuickGUI::Label* _estimateLabel = nullptr;
 
+    olc::QuickGUI::Label* _ptDataLabel = nullptr;
+
     bool _validateInputs() {
         for (char& c : _seedTextInput->sText) if (!std::isdigit(c)) return false;
         for (char& c : _minInput->sText) if (!std::isdigit(c)) return false;
@@ -252,8 +268,11 @@ private:
         // _updateParamsBtn = new olc::QuickGUI::Button(_guiManager, "Update", { 850.0f, 200.0f },
             // { 50.0f, 50.0f });
 
-        _estimateLabel = new olc::QuickGUI::Label(_guiManager, "", { 850.0f, 200.f }, 
+        _estimateLabel = new olc::QuickGUI::Label(_guiManager, "", { 900.0f, 200.f }, 
             { 100.0f, 50.0f });
+
+        _ptDataLabel = new olc::QuickGUI::Label(_guiManager, "Click a point to get its data", 
+            { 900.0f, 450.f }, { 100.0f, 50.0f });
 
     }
 
@@ -316,6 +335,8 @@ private:
 
         float currentXPos = (float)_graphPos.x;
         int graphXAxis = _graphPos.y + _graphSize.y;
+        olc::vi2d hitboxOffset = { 2, 2 };
+
         for (uInt i = _min; i < _max; i++) {
             GraphPoint gp = GraphPoint();
             gp.value = i;
@@ -323,11 +344,31 @@ private:
             gp.relFreqPercent = (float)gp.relFreq / (float)_generatedNums.size();
             gp.weightedRelFreqPercent = (float)gp.relFreq / (float)_highestRelFreq;
 
+            
             gp.pos = { (int)currentXPos, (int)(graphXAxis - (gp.weightedRelFreqPercent * _maxYDisplacement))};
+            gp.hitbox = { {gp.pos - hitboxOffset}, {gp.pos + hitboxOffset} };
             _graphPoints.push_back(gp);
 
             currentXPos += graphXSpace;
         }
+    }
+
+    void _updatePtDataListener() {
+        if (GetMouse(0).bPressed) {
+            olc::vi2d mousePos = GetMousePos();
+
+            for (auto& p : _graphPoints) {
+                if (checkPtCollision(mousePos, p.hitbox)) {
+                    _ptDataLabel->sText =
+                        "Value: " + std::to_string(p.value) + "\n\n"
+                        "Relative frequency: \n\n" 
+                        + std::to_string(p.relFreq) + " / " + std::to_string(_generatedNums.size()) + "\n\n"
+                        "[" + std::to_string(p.relFreqPercent) + "]";
+                }       
+            }
+        }
+
+        DrawRect({ 850, 400 }, { 200, 200 }, olc::BLACK);
     }
 };
 
