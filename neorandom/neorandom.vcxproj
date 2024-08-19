@@ -129,8 +129,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="neorandom.h" />
-    <ClInclude Include="olcPGEX_QuickGUI.h" />
-    <ClInclude Include="olcPixelGameEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="neorandomapp.cpp" />

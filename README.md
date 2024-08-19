@@ -5,9 +5,12 @@
 ### Aiden Li
 ### Note: Does require some coding and technical know-how
 
+https://community.onelonecoder.com/olcpixelgameengine/
+This program utilizes the OLC PixelGameEngine and PGEX QuickGUI in its header (Copyright notice below).
+
 Compatible with Windows 10/11 (so far)
 
-Neorandom is a PGE application that allows the user to input a congruential algorithm and view the 
+Neorandom is a single-header, PGE-based application that allows the user to input a congruential algorithm and view the 
 stastical distrubtion of its results on a graph. 
 
 The goal of this program is to provide insight on self-implemented RNG algorithms by allowing the
@@ -17,7 +20,7 @@ user to input their own algorithm and see the potential results, biases, or issu
 - Self-implemented RNG algorithm method (setAlgo())
 - Post-runtime stats graph
 - Parameter customization (range, iterations, positive integers only)
-- Runtime estimation
+- Runtime estimation (may not be accurate for older machines)
 - On-click statistics for each point
 
 ### Future Plans (maybe)
@@ -32,7 +35,9 @@ user to input their own algorithm and see the potential results, biases, or issu
 5. Run
 
 
-## Example: 
+## Example:
+
+Assuming you already have the header file in your project:
 
 ```
 // neorandom.cpp : This file contains the 'main' function. Program execution begins and ends there.
@@ -71,8 +76,6 @@ int main() {
     return 0;
 }
 ```
-
-This program does utilize the OLC PixelGameEngine.
 
 # License (OLC-3)
 Copyright 2018 - 2024 OneLoneCoder.com
