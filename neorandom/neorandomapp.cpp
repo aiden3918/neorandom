@@ -3,7 +3,7 @@
 #define OLC_PGE_APPLICATION
 #define OLC_PGEX_QUICKGUI
 
-#include "neorandom.h"
+#include "olcPixelGameEngine.h"
 #include <iostream>
 
 class App : public NeoRandom {
